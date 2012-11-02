@@ -40,6 +40,8 @@ void BST<T>::remove(T v) {
   Node<T>** parent = &root;
   Node<T>** Node_to_remove = &root;
   Node<T>** temp = &root;
+  Node<T>** removeRight = &root;
+  Node<T>** removeLeft = &root;
   while((*Node_to_remove)->getValue() != v && *Node_to_remove != 0) {
     parent = Node_to_remove;
     if((*Node_to_remove)->getValue() < v) {
@@ -49,57 +51,61 @@ void BST<T>::remove(T v) {
       Node_to_remove = &((*Node_to_remove)->getLeftChild());
     }
   }
-  if((*Node_to_remove)->getLeftChild() != 0) {
-    Node<T>** replacement_parent = parent;
-    Node<T>** replacement = Node_to_remove;
-    replacement = &((*replacement)->getLeftChild());
+  removeRight = &((*Node_to_remove)->getRightChild());
+  removeLeft = &((*Node_to_remove)->getLeftChild());
+  if(*removeLeft != 0) {
+    Node<T>** replacement_parent = Node_to_remove;
+    Node<T>** replacement = removeLeft;
     while((*replacement)->getRightChild() != 0) {
       replacement_parent = replacement;
       replacement = &((*replacement)->getRightChild());
     }
     if((*replacement)->getLeftChild() != 0) {
       temp = &((*replacement)->getLeftChild());
-      (*replacement_parent)->setRightChild(**temp);
+      if((*replacement_parent)->getValue() < (*replacement)->getValue()) {
+        (*replacement_parent)->setRightChild(**temp);
+      }
+      
     }
     if(Node_to_remove != &root) {
       if((*parent)->getValue() < v) {
-        temp = &((*replacement_parent)->getRightChild());
+        temp = &(*replacement);
         (*parent)->setRightChild(**temp);
       }
       else {
-        temp = &((*replacement_parent)->getRightChild());
+        temp = &(*replacement);
         (*parent)->setLeftChild(**temp);
       }
     }
     if(Node_to_remove == &root) {
       root = *replacement;
     }
-    if((*Node_to_remove)->getLeftChild() != 0) {
-      temp = &((*Node_to_remove)->getLeftChild());
+    if(removeLeft != replacement) {
+      temp = &(*removeLeft);
       (*replacement)->setLeftChild(**temp);
     }
-    if((*Node_to_remove)->getRightChild() != 0) {
-      temp = &((*Node_to_remove)->getRightChild());
+    if(*removeRight != 0) {
+      temp = &(*removeRight);
       (*replacement)->setRightChild(**temp);
     }
   }
-  else if((*Node_to_remove)->getLeftChild() == 0) {
-    if((*Node_to_remove)->getRightChild() != 0) {
+  else if(*removeLeft == 0) {
+    if(*removeRight != 0) {
       if(Node_to_remove != &root) {
-        temp = &((*Node_to_remove)->getRightChild());
+        temp = &(*removeRight);
         (*parent)->setRightChild(**temp);
       }
       else {
-        root = (*Node_to_remove)->getRightChild();
+        root = *removeRight;
       }
     }
     else {
       if((*parent)->getRightChild() == *Node_to_remove) {
-        temp = &((*Node_to_remove)->getRightChild());
+        temp = &(*removeRight);
         (*parent)->setRightChild(**temp);
       }
       else {
-        temp = &((*Node_to_remove)->getLeftChild());
+        temp = &(*removeLeft);
         (*parent)->setLeftChild(**temp);
       }
       if(Node_to_remove == &root) {
