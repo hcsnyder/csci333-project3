@@ -128,7 +128,6 @@ void BST<T>::visualRepPrint() {
   std::string space = " ";
   std::string LeftChildLine = "//";
   std::string RightChildLine = "\\";
-  int row = 1;
   int middle = 70;
   std::list<Node<T>* > parentQueue;
   std::list<Node<T>* > childQueue;
@@ -137,14 +136,17 @@ void BST<T>::visualRepPrint() {
   Node<T>* pop;
   Node<T>* parent;
   int rowSize = childQueue.size();
-  while(childQueue.size > 0) {
+  while(rowSize > 0) {
     int sp_row = 0;
     int gap = 0;
     for(int i=0; i<rowSize; i++) {
       pop = childQueue.front();
       childQueue.pop_front();
       if(pop == root) {
-      std::cout << space*middle << pop.getValue();
+      for(int x=0; x<middle; x++) {
+        std::cout << space;
+      }
+      std::cout << pop->getValue();
       spacing.push_back(middle);
       }
       else if(pop != root) {
@@ -181,22 +183,25 @@ void BST<T>::visualRepPrint() {
           sp_c = sp_p+6;
         }
         gap = sp_c - sp_row;
-        std::cout << space*gap << pop.getValue();
+        for(int x=0; x<gap; x++) {
+          std::cout << space;
+        }
+        std::cout << pop->getValue();
         sp_row = gap;
         spacing.push_back(sp_c);
       }
       parentQueue.push_back(pop);
       if(pop->getLeftChild() != 0) {
-        ChildQueue.push_back(pop->getLeftChild());
+        childQueue.push_back(pop->getLeftChild());
       }
       if(pop->getRightChild() != 0) {
-        ChildQueue.push_back(pop->getRightChild());
+        childQueue.push_back(pop->getRightChild());
       }
     }
     std::cout << std::endl;
     rowSize = childQueue.size();
     gap = 0;
-    for(int j=0; j<rowSize; i++) {
+    for(int a=0; a<rowSize; a++) {
       pop = childQueue.front();
       childQueue.pop_front();
       childQueue.push_back(pop);
@@ -208,17 +213,23 @@ void BST<T>::visualRepPrint() {
       if(pop->getLeftChild() != 0) {
         sp_c = sp_p-3;
         gap = sp_c - sp_row;
-        std::cout << space*gap << LeftChildLine;
+        for(int x=0; x<gap; x++) {
+          std::cout << space;
+        }
+        std::cout << LeftChildLine;
         sp_row = gap;
       }
       if(pop->getRightChild() != 0) {
         sp_c = sp_p+3;
         gap = sp_c - sp_row;
-        std::cout << space*gap << RightChildLine;
+        for(int y=0; y<gap; y++) {
+          std::cout << space;
+        }
+        std::cout << RightChildLine;
         sp_row = gap; 
       }
     }
-    std::cout <<std::endl;
+    std::cout << std::endl;
   }
 }
 
