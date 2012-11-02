@@ -13,5 +13,9 @@ int main() {
 
   bst->print();
 
+  bst->remove(5);
+
+  bst->print();
+
 
 }
