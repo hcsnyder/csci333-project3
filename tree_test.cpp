@@ -3,7 +3,7 @@
 int main() {
   BST<int>* bst = new BST<int>();
 
-  bst->insert(5);
+  bst->insert(1);
   bst->insert(6);
   bst->insert(3);
   bst->insert(4);
@@ -16,7 +16,7 @@ int main() {
 
   bst->visualRepPrint();
 
-  bst->remove(3);
+  bst->remove(1);
 
   bst->print();
 

@@ -42,32 +42,31 @@ void BST<T>::remove(T v) {
   Node<T>** temp = &root;
   Node<T>** removeRight = &root;
   Node<T>** removeLeft = &root;
-  while((*Node_to_remove)->getValue() != v && *Node_to_remove != 0) {
-    parent = Node_to_remove;
-    if((*Node_to_remove)->getValue() < v) {
-      Node_to_remove = (&((*Node_to_remove)->getRightChild()));
-    }
-    else if((*Node_to_remove)->getValue() > v) {
-      Node_to_remove = &((*Node_to_remove)->getLeftChild());
-    }
-  }
-  removeRight = &((*Node_to_remove)->getRightChild());
-  removeLeft = &((*Node_to_remove)->getLeftChild());
-  if(*removeLeft != 0) {
-    Node<T>** replacement_parent = Node_to_remove;
-    Node<T>** replacement = removeLeft;
-    while((*replacement)->getRightChild() != 0) {
-      replacement_parent = replacement;
-      replacement = &((*replacement)->getRightChild());
-    }
-    if((*replacement)->getLeftChild() != 0) {
-      temp = &((*replacement)->getLeftChild());
-      if((*replacement_parent)->getValue() < (*replacement)->getValue()) {
-        (*replacement_parent)->setRightChild(**temp);
+  if(root->getValue() != v) {
+    while((*Node_to_remove)->getValue() != v && *Node_to_remove != 0) {
+      parent = Node_to_remove;
+      if((*Node_to_remove)->getValue() < v) {
+        Node_to_remove = (&((*Node_to_remove)->getRightChild()));
       }
-      
+      else if((*Node_to_remove)->getValue() > v) {
+        Node_to_remove = &((*Node_to_remove)->getLeftChild());
+      }
     }
-    if(Node_to_remove != &root) {
+    removeRight = &((*Node_to_remove)->getRightChild());
+    removeLeft = &((*Node_to_remove)->getLeftChild());
+    if(*removeLeft != 0) {
+      Node<T>** replacement_parent = Node_to_remove;
+      Node<T>** replacement = removeLeft;
+      while((*replacement)->getRightChild() != 0) {
+        replacement_parent = replacement;
+        replacement = &((*replacement)->getRightChild());
+      }
+      if((*replacement)->getLeftChild() != 0) {
+        temp = &((*replacement)->getLeftChild());
+        if((*replacement_parent)->getValue() < (*replacement)->getValue()) {
+          (*replacement_parent)->setRightChild(**temp);
+        }     
+      }
       if((*parent)->getValue() < v) {
         temp = &(*replacement);
         (*parent)->setRightChild(**temp);
@@ -76,41 +75,54 @@ void BST<T>::remove(T v) {
         temp = &(*replacement);
         (*parent)->setLeftChild(**temp);
       }
+      if(removeLeft != replacement) {
+        temp = &(*removeLeft);
+        (*replacement)->setLeftChild(**temp);
+      }
+      if(*removeRight != 0) {
+        temp = &(*removeRight);
+        (*replacement)->setRightChild(**temp);
+      }
     }
-    if(Node_to_remove == &root) {
-      root = *replacement;
-    }
-    if(removeLeft != replacement) {
-      temp = &(*removeLeft);
-      (*replacement)->setLeftChild(**temp);
-    }
-    if(*removeRight != 0) {
-      temp = &(*removeRight);
-      (*replacement)->setRightChild(**temp);
+    else if(*removeLeft == 0) {
+      if(*removeRight != 0) {
+        temp = &(*removeRight);
+        (*parent)->setRightChild(**temp);
+      }
+      else {
+        if((*parent)->getRightChild() == *Node_to_remove) {
+          temp = &(*removeRight);
+          (*parent)->setRightChild(**temp);
+        }
+        else {
+          temp = &(*removeLeft);
+          (*parent)->setLeftChild(**temp);
+        }
+      }
     }
   }
-  else if(*removeLeft == 0) {
-    if(*removeRight != 0) {
-      if(Node_to_remove != &root) {
-        temp = &(*removeRight);
-        (*parent)->setRightChild(**temp);
+  else {
+    (*removeLeft) = root->getLeftChild();
+    (*removeRight) = root->getRightChild();
+    if(removeLeft != 0) {
+      Node<T>** replacement = removeLeft;
+      Node<T>** replacement_parent = Node_to_remove;
+      while((&(*replacement)->getRightChild()) != 0) {
+        replacement_parent = replacement;
+        replacement = &((*replacement)->getRightChild());
+      }
+      temp = &(*replacement)->getLeftChild();
+      if((*replacement_parent)->getValue() < (*replacement)->getValue()) {
+        (*replacement_parent)->setRightChild(**temp);
       }
       else {
-        root = *removeRight;
-      }
-    }
-    else {
-      if((*parent)->getRightChild() == *Node_to_remove) {
-        temp = &(*removeRight);
-        (*parent)->setRightChild(**temp);
-      }
-      else {
-        temp = &(*removeLeft);
-        (*parent)->setLeftChild(**temp);
-      }
-      if(Node_to_remove == &root) {
-        root = root->getRightChild();
-      }
+        (*replacement_parent)->setLeftChild(**temp);
+      } 
+      temp = &((*removeLeft));
+      (*replacement)->setLeftChild(**temp);
+      temp = &((*removeRight));
+      (*replacement)->setRightChild(**temp);
+      root = *replacement;    
     }
   }
 }
@@ -132,8 +144,8 @@ void BST<T>::traversalPrint(Node<T>* root) {
 template<typename T>
 void BST<T>::visualRepPrint() {
   std::string space = " ";
-  std::string LeftChildLine = "//";
-  std::string RightChildLine = "\\";
+  std::string LeftChildLine = "L";
+  std::string RightChildLine = "R";
   int middle = 70;
   std::list<Node<T>* > parentQueue;
   std::list<Node<T>* > childQueue;
@@ -141,11 +153,11 @@ void BST<T>::visualRepPrint() {
   childQueue.push_back(root);
   Node<T>* pop;
   Node<T>* parent;
-  int rowSize = childQueue.size();
-  while(rowSize > 0) {
+  int crowSize = childQueue.size();
+  while(crowSize > 0) {
     int sp_row = 0;
     int gap = 0;
-    for(int i=0; i<rowSize; i++) {
+    for(int i=0; i<crowSize; i++) {
       pop = childQueue.front();
       childQueue.pop_front();
       if(pop == root) {
@@ -160,7 +172,6 @@ void BST<T>::visualRepPrint() {
         int side = 0;
         int sp_p = 0;
         int sp_c = 0;
-        int sp_row = 0;
         while(p == false) {
           if(parentQueue.front()->getLeftChild() == pop) {
             side = 0;
@@ -193,7 +204,7 @@ void BST<T>::visualRepPrint() {
           std::cout << space;
         }
         std::cout << pop->getValue();
-        sp_row = gap;
+        sp_row = sp_row+gap;
         spacing.push_back(sp_c);
       }
       parentQueue.push_back(pop);
@@ -205,15 +216,15 @@ void BST<T>::visualRepPrint() {
       }
     }
     std::cout << std::endl;
-    rowSize = childQueue.size();
+    int prowSize = parentQueue.size();
     gap = 0;
-    for(int a=0; a<rowSize; a++) {
-      pop = childQueue.front();
-      childQueue.pop_front();
-      childQueue.push_back(pop);
+    sp_row = 0;
+    for(int a=0; a<prowSize; a++) {
+      pop = parentQueue.front();
+      parentQueue.pop_front();
+      parentQueue.push_back(pop);
       int sp_p = spacing.front();
       int sp_c = 0;
-      sp_row = 0;
       spacing.pop_front();
       spacing.push_back(sp_p);
       if(pop->getLeftChild() != 0) {
@@ -223,7 +234,7 @@ void BST<T>::visualRepPrint() {
           std::cout << space;
         }
         std::cout << LeftChildLine;
-        sp_row = gap;
+        sp_row = sp_row+gap;
       }
       if(pop->getRightChild() != 0) {
         sp_c = sp_p+3;
@@ -232,9 +243,10 @@ void BST<T>::visualRepPrint() {
           std::cout << space;
         }
         std::cout << RightChildLine;
-        sp_row = gap; 
+        sp_row = sp_row+gap; 
       }
     }
+    crowSize = childQueue.size();
     std::cout << std::endl;
   }
 }
