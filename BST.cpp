@@ -129,16 +129,30 @@ void BST<T>::remove(T v) {
 }
 
 template <typename T>
-void BST<T>::print() {
-  traversalPrint(root);
+void BST<T>::InOrderPrint() {
+  InOrderTraversalPrint(root);
 }
 
 template <typename T>
-void BST<T>::traversalPrint(Node<T>* root) {
+void BST<T>::PostOrderPrint() {
+  PostOrderTraversalPrint(root);
+}
+
+template <typename T>
+void BST<T>::InOrderTraversalPrint(Node<T>* root) {
   if(root != 0) {
     traversalPrint(root->getLeftChild());
     std::cout << root->getValue() << std::endl;
     traversalPrint(root->getRightChild());
+  }
+}
+
+template<typename T>
+void BST<T>::PostOrderTraversalPrint(Node<T>* root) {
+  if(root != 0) {
+    traversalPrint(root->getLeftChild());
+    traversalPrint(root->getRightChild());
+    std::cout << root->getValue() << std::endl;
   }
 }
 

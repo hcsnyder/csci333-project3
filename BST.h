@@ -8,7 +8,8 @@ template <typename T>
 class BST {
  private:
   Node<T>* root;
-  void traversalPrint(Node<T>* root);
+  void InOrderTraversalPrint(Node<T>* root);
+  void postOrderTraversalPrint(Node<T>* root);
 
  public:
   BST<T>();
@@ -17,7 +18,8 @@ class BST {
   bool find(T v);
   void remove(T v);
   void insert(T v);
-  void print();
+  void InOrderTraversal();
+  void PostOrderTraversal();
   void visualRepPrint();
 };
 
