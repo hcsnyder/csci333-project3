@@ -11,13 +11,9 @@ int main() {
   bst->insert(7);
 
 
-  bst->print();
-
   bst->visualRepPrint();
 
   bst->remove(6);
-
-  bst->print();
 
   bst->visualRepPrint();
 
@@ -25,13 +21,9 @@ int main() {
   bst->insert(6);
   bst->insert(8);
 
-  bst->print();
-
   bst->visualRepPrint();
 
   bst->remove(5);
-
-  bst->print();
 
   bst->visualRepPrint();
 }

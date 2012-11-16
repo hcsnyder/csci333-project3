@@ -9,7 +9,8 @@ class BST {
  private:
   Node<T>* root;
   void InOrderTraversalPrint(Node<T>* root);
-  void postOrderTraversalPrint(Node<T>* root);
+  void PostOrderTraversalPrint(Node<T>* root);
+  void rotate(Node<T>** cn, int d);
 
  public:
   BST<T>();

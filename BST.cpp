@@ -128,30 +128,41 @@ void BST<T>::remove(T v) {
   }
 }
 
+template<typename T>
+void BST<T>::rotate(Node<T>** cn, int d) {
+  if(d == 2) {
+    Node<T>** tempRC = &((*cn)->getRightChild());
+    Node<T>** tempLC = &((*tempRC)->getLeftChild());
+    Node<T>** tempCN = &(*cn);
+    (*tempRC)->setLeftChild(**tempCN);
+    (*cn)->setRightChild(**tempLC);
+  }
+}
+
 template <typename T>
-void BST<T>::InOrderPrint() {
+void BST<T>::InOrderTraversal() {
   InOrderTraversalPrint(root);
 }
 
 template <typename T>
-void BST<T>::PostOrderPrint() {
+void BST<T>::PostOrderTraversal() {
   PostOrderTraversalPrint(root);
 }
 
 template <typename T>
 void BST<T>::InOrderTraversalPrint(Node<T>* root) {
   if(root != 0) {
-    traversalPrint(root->getLeftChild());
+    InOrderTraversalPrint(root->getLeftChild());
     std::cout << root->getValue() << std::endl;
-    traversalPrint(root->getRightChild());
+    InOrderTraversalPrint(root->getRightChild());
   }
 }
 
 template<typename T>
 void BST<T>::PostOrderTraversalPrint(Node<T>* root) {
   if(root != 0) {
-    traversalPrint(root->getLeftChild());
-    traversalPrint(root->getRightChild());
+    PostOrderTraversalPrint(root->getLeftChild());
+    PostOrderTraversalPrint(root->getRightChild());
     std::cout << root->getValue() << std::endl;
   }
 }

@@ -5,12 +5,16 @@ template <typename T>
 class Node {
  private:
   T value;
+  int balance;
   Node<T>* leftChild;
   Node<T>* rightChild;
 
  public:
   Node<T>(T v);
   T getValue();
+
+  int getBalance();
+  void setBalance(int b);
 
   Node<T>*& getLeftChild();
   void setLeftChild(Node<T>& n);
