@@ -1,6 +1,7 @@
 #include "BST.h"
 #include <iostream>
 #include <list>
+#include<vector>
 
 template <typename T>
 BST<T>::BST() {
@@ -129,7 +130,7 @@ void BST<T>::remove(T v) {
 }
 
 template<typename T>
-void BST<T>::rotate(Node<T>** cn, int d) {
+void BST<T>::rotate(Node<T>** cn, short int d) {
   if(d == 2) {
     Node<T>** tempRC = &((*cn)->getRightChild());
     Node<T>** tempLC = &((*tempRC)->getLeftChild());
@@ -137,34 +138,74 @@ void BST<T>::rotate(Node<T>** cn, int d) {
     (*tempRC)->setLeftChild(**tempCN);
     (*cn)->setRightChild(**tempLC);
   }
-}
-
-template <typename T>
-void BST<T>::InOrderTraversal() {
-  InOrderTraversalPrint(root);
-}
-
-template <typename T>
-void BST<T>::PostOrderTraversal() {
-  PostOrderTraversalPrint(root);
-}
-
-template <typename T>
-void BST<T>::InOrderTraversalPrint(Node<T>* root) {
-  if(root != 0) {
-    InOrderTraversalPrint(root->getLeftChild());
-    std::cout << root->getValue() << std::endl;
-    InOrderTraversalPrint(root->getRightChild());
+  if(d == -2) {
+    Node<T>** tempLC = &((*cn)->getLeftChild());
+    Node<T>** tempRC = &((*tempLC)->getRightChild());
+    Node<T>** tempCN = &(*cn);
+    (*tempLC)->setRightChild(**tempCN);
+    (*cn)->setLeftChild(**tempRC);
   }
 }
 
 template<typename T>
-void BST<T>::PostOrderTraversalPrint(Node<T>* root) {
-  if(root != 0) {
-    PostOrderTraversalPrint(root->getLeftChild());
-    PostOrderTraversalPrint(root->getRightChild());
-    std::cout << root->getValue() << std::endl;
+short int BST<T>::findB(Node<T>** n) {
+  short int leftH = 0;
+  short int rightH = 0;
+  if((*n)->getLeftChild() == 0) {
+    leftH = 0;
   }
+  else {
+    leftH = 1 + findB(&((*n)->getLeftChild()));
+  }  
+  if((*n)->getRightChild() == 0) {
+    rightH = 0;
+  }
+  else {
+    rightH = 1 + findB(&((*n)->getRightChild()));
+  }
+  short int bal = rightH - leftH;
+  (*n)->setBalance(bal);
+  return bal;
+}
+
+template <typename T>
+void BST<T>::InOrderTraversalPrint() {
+  std::vector<Node<T>* > v = InOrderTraversal(root);
+  for(unsigned int i=0; i<v.size(); i++) {
+    Node<T>* n = v[i];
+    std::cout << n->getValue() << std::endl;
+  }
+}
+
+template <typename T>
+void BST<T>::PostOrderTraversalPrint() {
+  std::vector<Node<T>* > v = PostOrderTraversal(root);
+  for(unsigned int i=0; i<v.size(); i++) {
+    Node<T>* n = v[i];
+    std::cout << n->getValue() << std::endl;
+  }
+}
+
+template <typename T>
+std::vector<Node<T>* > BST<T>::InOrderTraversal(Node<T>* root) {
+  std::vector<Node<T>* > v;
+  if(root != 0) {
+    InOrderTraversal(root->getLeftChild());
+    v.push_back(root);
+    InOrderTraversal(root->getRightChild());
+  }
+  return v;
+}
+
+template<typename T>
+std::vector<Node<T>* > BST<T>::PostOrderTraversal(Node<T>* root) {
+ std::vector<Node<T>* > v; 
+ if(root != 0) {
+    PostOrderTraversal(root->getLeftChild());
+    PostOrderTraversal(root->getRightChild());
+    v.push_back(root);
+  }
+  return v;
 }
 
 template<typename T>
