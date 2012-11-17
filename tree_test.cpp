@@ -1,29 +1,18 @@
 #include "BST.h"
 
 int main() {
-  BST<int>* bst = new BST<int>();
+  BST<int>* avl = new BST<int>();
 
-  bst->insert(5);
-  bst->insert(6);
-  bst->insert(3);
-  bst->insert(4);
-  bst->insert(2);
-  bst->insert(7);
+  avl->insert(5);
+  avl->insert(6);
+  avl->insert(7);
 
+  //avl->visualRepPrint();
 
-  bst->visualRepPrint();
+  avl->insert(3);
+  avl->insert(4);
+  avl->insert(2);
 
-  bst->remove(6);
+  //avl->visualRepPrint();
 
-  bst->visualRepPrint();
-
-  bst->insert(1);
-  bst->insert(6);
-  bst->insert(8);
-
-  bst->visualRepPrint();
-
-  bst->remove(5);
-
-  bst->visualRepPrint();
 }

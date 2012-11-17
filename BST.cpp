@@ -34,6 +34,34 @@ void BST<T>::insert(T v) {
     }
   }
   *curr = temp;
+  Node<T>* ch;
+  std::vector<Node<T>* > v1 = InOrderTraversal(root);
+  bool other = false;
+  for(unsigned int i=0; i<v1.size(); i++) {
+    ch = v1[i];
+    findB(&ch);
+    if(ch->getBalance() == -2 || ch->getBalance() == 2) {
+      other = true;
+      break;
+    }
+  }
+  while(other == true) {
+    Node<T>* cn = ch;
+    rotate(&cn);
+    bool again = false;
+    std::vector<Node<T>* > x = InOrderTraversal(root);
+    for(unsigned int j=0; j<x.size(); j++) {
+      Node<T>* cn = x[j];
+      findB(&cn);
+      if(ch->getBalance() == -2 || ch->getBalance() == 2) {
+        again = true;
+        break;
+      }
+    }
+    if(again == false) {
+      other = false;
+    }
+  }
 }
 
 template <typename T>
@@ -130,42 +158,83 @@ void BST<T>::remove(T v) {
 }
 
 template<typename T>
-void BST<T>::rotate(Node<T>** cn, short int d) {
+void BST<T>::rotate(Node<T>** cn) {
+  short int d = (*cn)->getBalance();
+  bool r;
+  if(cn == &root) {
+    r = true;
+  }
+  else {
+    r = false;
+  }
   if(d == 2) {
     Node<T>** tempRC = &((*cn)->getRightChild());
-    Node<T>** tempLC = &((*tempRC)->getLeftChild());
+    Node<T>** tempLC;
+    bool l = false;
+    if(&((*tempRC)->getLeftChild()) != 0) {
+      tempLC = &((*tempRC)->getLeftChild());
+      l = true;
+    }
     Node<T>** tempCN = &(*cn);
     (*tempRC)->setLeftChild(**tempCN);
-    (*cn)->setRightChild(**tempLC);
+    if(r == true) {
+      root = *tempRC;
+    }
+    if(l == true) {
+      (*cn)->setRightChild(**tempLC);
+    }
   }
   if(d == -2) {
     Node<T>** tempLC = &((*cn)->getLeftChild());
-    Node<T>** tempRC = &((*tempLC)->getRightChild());
+    Node<T>** tempRC;
+    bool R = false;
+    if(&((*tempLC)->getRightChild()) != 0) {
+      R = true;
+      tempRC = &((*tempLC)->getRightChild());
+    }
     Node<T>** tempCN = &(*cn);
     (*tempLC)->setRightChild(**tempCN);
-    (*cn)->setLeftChild(**tempRC);
+    if(r == true) {
+      root = *tempLC;
+    }
+    if(R == true) {
+      (*cn)->setLeftChild(**tempRC);
+    } 
   }
 }
 
 template<typename T>
-short int BST<T>::findB(Node<T>** n) {
+void BST<T>::findB(Node<T>** n) {
   short int leftH = 0;
   short int rightH = 0;
+  bool noL = false;
+  bool noR = false;
   if((*n)->getLeftChild() == 0) {
     leftH = 0;
+    noL = true;
   }
-  else {
-    leftH = 1 + findB(&((*n)->getLeftChild()));
-  }  
   if((*n)->getRightChild() == 0) {
     rightH = 0;
+    noR = true;
   }
-  else {
-    rightH = 1 + findB(&((*n)->getRightChild()));
+  else if(noL == false || noR == false) {
+    std::vector<Node<T>* > v = InOrderTraversal(&(**n));
+    for(unsigned int i=0; i<v.size(); i++) {
+      Node<T>* nlow = v[i-1];
+      Node<T>* npar = v[i];
+      Node<T>* nhigh = v[i+1];
+      if(npar == *n) {
+        if(nlow != 0) {
+          leftH = nlow->getBalance() - 1;
+        }
+        if(nhigh != 0) {
+          rightH = nhigh->getBalance() + 1;;
+        } 
+      }
+    }
   }
   short int bal = rightH - leftH;
   (*n)->setBalance(bal);
-  return bal;
 }
 
 template <typename T>
@@ -187,23 +256,23 @@ void BST<T>::PostOrderTraversalPrint() {
 }
 
 template <typename T>
-std::vector<Node<T>* > BST<T>::InOrderTraversal(Node<T>* root) {
+std::vector<Node<T>* > BST<T>::InOrderTraversal(Node<T>* n) {
   std::vector<Node<T>* > v;
-  if(root != 0) {
-    InOrderTraversal(root->getLeftChild());
-    v.push_back(root);
-    InOrderTraversal(root->getRightChild());
+  if(n != 0) {
+    InOrderTraversal(n->getLeftChild());
+    v.push_back(n);
+    InOrderTraversal(n->getRightChild());
   }
   return v;
 }
 
 template<typename T>
-std::vector<Node<T>* > BST<T>::PostOrderTraversal(Node<T>* root) {
+std::vector<Node<T>* > BST<T>::PostOrderTraversal(Node<T>* n) {
  std::vector<Node<T>* > v; 
- if(root != 0) {
-    PostOrderTraversal(root->getLeftChild());
-    PostOrderTraversal(root->getRightChild());
-    v.push_back(root);
+ if(n != 0) {
+    PostOrderTraversal(n->getLeftChild());
+    PostOrderTraversal(n->getRightChild());
+    v.push_back(n);
   }
   return v;
 }

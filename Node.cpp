@@ -15,12 +15,12 @@ T Node<T>::getValue() {
 }
 
 template <typename T>
-int Node<T>::getBalance() {
+short int Node<T>::getBalance() {
   return balance;
 }
 
 template <typename T>
-void Node<T>::setBalance(int b) {
+void Node<T>::setBalance(short int b) {
   balance = b;
 }
 

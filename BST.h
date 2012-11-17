@@ -11,8 +11,8 @@ class BST {
   Node<T>* root;
   std::vector<Node<T> * > InOrderTraversal(Node<T>* root);
   std::vector<Node<T> * > PostOrderTraversal(Node<T>* root);
-  void rotate(Node<T>** cn, short int d);
-  short int findB(Node<T>** n);
+  void rotate(Node<T>** cn);
+  void findB(Node<T>** n);
 
  public:
   BST<T>();
